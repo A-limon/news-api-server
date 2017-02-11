@@ -63,7 +63,7 @@ const getNews = function (source, sort, callback) {
 const getList = function (results, callback) {
   results.forEach(function (channel) {
      channel.attributes.sortBysAvailable.forEach(function (sort) {
-      getNews(channel.id, channel.attributes.channel_id, sort, callback)
+      getNews(channel.attributes.channel_id, sort, callback)
     })
   })
 }

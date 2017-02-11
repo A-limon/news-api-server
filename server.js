@@ -36,12 +36,6 @@ app.use('/news', NewsRuoter)
 // channels router
 app.use('/channels', ChannelsRuoter)
 
-// app.use(function(req, res, next) {
-//   const err = new Error('Not Found')
-//   err.status = 404
-//   next(err)
-// })
-
 app.listen(3000, function () {
   console.log('News API Server is listening on port 3000, Good Luck!')
 })

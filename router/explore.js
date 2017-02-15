@@ -16,12 +16,12 @@ const innerGet = function (API, requestData) {
 router.get('/', function (req, res) {
   const remcommend = {
     channels: function innerChannels () {
-      return innerGet(Config.INNERAPI + 'channels/multi', {
+      return innerGet(Config.INNERAPI + '/channels/multi', {
         ids: ['589d83868ac247002b83a52e','589d83868ac247002b83a4fa', '589d83868ac247002b83a505', '589d83868ac247002b83a50e', '589d83868ac247002b83a529']
       })
     },
     news: function innerChannels () {
-      return innerGet(Config.INNERAPI + 'news/multi', {
+      return innerGet(Config.INNERAPI + '/news/multi', {
         ids: ['589d8e0961ff4b006b3b14ce','589d8e0a1b69e60059bdbee4', '589d8e090ce46300562dad33', '589d8e1386b599006b2f5be3', '589d8e1086b599006b2f5bd2']
       })
     }

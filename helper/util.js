@@ -26,7 +26,7 @@ const Util = {
     })
   },
   errorHandler: function (res, error) {
-    console.log(error)
+    console.error(error)
     res.send({
       code: error.code,
       msg: error.msg

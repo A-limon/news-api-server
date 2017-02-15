@@ -1,7 +1,7 @@
 const SETTING = {
   API: 'https://newsapi.org/v1/articles',
   KEY: process.env.NEWS_API_KEY,
-  INNERAPI: process.env.INNER_API,
+  INNERAPI: 'https://newsapi.leanapp.cn',
   ERROR: {
     param: {
       code: -1,

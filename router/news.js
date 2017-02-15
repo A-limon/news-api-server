@@ -1,62 +1,40 @@
 const express = require('express')
-const AV = require('leanengine')
 const router = express.Router()
-const config = require('../config')
-
-const errorHandler = function (res, msg ,log) {
-  res.send({
-    code: 0,
-    msg: msg
-  })
-  if (log !== undefined && log > 0) {
-    console.error(msg)
-  }
-}
-
-const handelNews = function (res, source, sortBy) {
-  const newsSourceQuery = new AV.Query('News')
-  newsSourceQuery.equalTo('source', source)
-  
-  const newsSortQuery = new AV.Query('News')
-  newsSortQuery.equalTo('sort_by', sortBy)
-  
-  const newsQuery = AV.Query.and(newsSourceQuery, newsSortQuery)
-  newsQuery.find().then(function (results) {
-    if (results && results.length > 0) {
-      res.send({
-        code: 1,
-        data: results[0].attributes.content
-      })
-    } else {
-      errorHandler(res, 'no news')
-    } 
-  }, function (error) {
-    errorHandler(res, error, 1)
-  })
-}
+const Util = require('../helper/util')
+const Lean = require('../helper/leancloud')
+const Config = require('../config')
 
 router.get('/', function (req, res) {
   const source = req.query.source
   const sortBy = req.query.sortBy
-
   if (source !== undefined && sortBy !== undefined) {
-    const channelQuery = new AV.Query('Channel')
-    channelQuery.equalTo('channel_id', source)
-    channelQuery.find().then(function (results) {
-      if (results && results.length > 0) {
-        if (results[0].attributes.sortBysAvailable.indexOf(sortBy) !== -1) {
-          handelNews(res, source, sortBy)
-        } else {
-          errorHandler(res, 'no this sort way')
-        }
-      } else {
-        errorHandler(res, 'no channel')
-      } 
+    Lean.andQuery('News',[{key: 'source', value: source}, {key: 'sort_by', value: sortBy}], function (results) {
+       Util.successHandler(res, results[0])
     }, function (error) {
-      errorHandler(res, error, 1)
+      Util.errorHandler(res, {
+        code: Config.ERROR.sql.code,
+        msg: Config.ERROR.sql.msg,
+        error: error
+      })
     })
   } else {
-    errorHandler(res, 'not availabled')
+    Util.errorHandler(res, Config.ERROR.param)
+  }
+})
+
+router.post('/multi', function (req, res) {
+  if (req.body === undefined || req.body.ids === undefined || req.body.ids.length ===0) {
+    Util.errorHandler(res, Config.ERROR.param)
+  } else {
+    Lean.multiQuery('News', 'objectId', req.body.ids, function (results) {
+      Util.successHandler(res, results)
+    }, function (error) {
+      Util.errorHandler(res, {
+        code: Config.ERROR.sql.code,
+        msg: Config.ERROR.sql.msg,
+        error: error
+      })
+    })
   }
 })
 

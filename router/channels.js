@@ -1,30 +1,31 @@
 const express = require('express')
-const AV = require('leanengine')
 const router = express.Router()
-const config = require('../config')
+const Util = require('../helper/util')
+const Lean = require('../helper/leancloud')
+const Config = require('../config')
 
 router.get('/', function (req, res) {
-  const channelQuery = new AV.Query('Channel')
-  channelQuery.find().then(function (results) {
-    if (results && results.length >0) {
-      res.send({
-        code: 1,
-        data: results
-      })
-    } else {
-      res.send({
-        code: 0,
-        msg: 'Data Channel Empty'
-      })
-      console.error('Data Channel Empty')
-    }
+  Lean.findAll('Channel', function (results) {
+    Util.successHandler(res, results)
   }, function (error) {
-    res.send({
-      code: 0,
-      msg: 'Query Channel failed'
-    })
-    console.error('Query Channel failed')
+    Util.errorHandler(res, error)
   })
+})
+
+router.post('/multi', function (req, res) {
+  if (req.body === undefined || req.body.ids === undefined || req.body.ids.length ===0) {
+    Util.errorHandler(res, Config.ERROR.param)
+  } else {
+    Lean.multiQuery('Channel', 'objectId', req.body.ids, function (results) {
+      Util.successHandler(res, results)
+    }, function (error) {
+      Util.errorHandler(res, {
+        code: Config.ERROR.sql.code,
+        msg: Config.ERROR.sql.msg,
+        error: error
+      })
+    })
+  }
 })
 
 module.exports = router

@@ -1,8 +1,13 @@
 const express = require('express')
 const app = express()
 const AV = require('leanengine')
+const bodyParser = require('body-parser')
+const multer = require('multer')
+const upload = multer()
 const NewsRuoter = require('./router/news')
+const SearchRuoter = require('./router/search')
 const ChannelsRuoter = require('./router/channels')
+const ExploreRuoter = require('./router/explore')
 
 // setting
 app.use(function (req, res, next) {
@@ -17,6 +22,9 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 })
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // use leancloud
 AV.init({
@@ -35,6 +43,12 @@ app.use('/news', NewsRuoter)
 
 // channels router
 app.use('/channels', ChannelsRuoter)
+
+// explore router
+app.use('/explore', ExploreRuoter)
+
+// search router
+app.use('/search', SearchRuoter)
 
 app.listen(3000, function () {
   console.log('News API Server is listening on port 3000, Good Luck!')

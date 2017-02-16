@@ -2,6 +2,15 @@ const axios = require('axios')
 const Config = require('../config')
 
 const Util = {
+  getRandomNumber: function (start, end, length) {
+    let arr = []
+    while (arr.length < length) {
+      const randomnumber = Math.floor(Math.random() * (end - start + 1)) + start
+      if (arr.indexOf(randomnumber) > -1) continue
+        arr[arr.length] = randomnumber
+    }
+    return arr
+  },
   post: function (API, requestData, successCb, errorCb) {
     axios.post(API , requestData)
     .then(function (response) {

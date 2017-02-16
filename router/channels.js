@@ -12,6 +12,24 @@ router.get('/', function (req, res) {
   })
 })
 
+router.get('/random', function (req, res) {
+  Lean.findAll('Channel', function (results) {
+    const randomNumber = 5
+    const randomArr = Util.getRandomNumber(0, results.length-1, randomNumber)
+    const returnData = []
+    for (let i = 0; i < randomNumber; i++) {
+      returnData.push(results[randomArr[i]])
+    }
+    Util.successHandler(res, returnData)
+  }, function (error) {
+    Util.errorHandler(res, {
+      code: Config.ERROR.sql.code,
+      msg: Config.ERROR.sql.msg,
+      error: error
+    })
+  })
+})
+
 router.post('/multi', function (req, res) {
   if (req.body === undefined || req.body.ids === undefined || req.body.ids.length ===0) {
     Util.errorHandler(res, Config.ERROR.param)

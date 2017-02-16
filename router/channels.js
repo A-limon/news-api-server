@@ -14,7 +14,7 @@ router.get('/', function (req, res) {
 
 router.get('/random', function (req, res) {
   Lean.findAll('Channel', function (results) {
-    const randomNumber = 5
+    const randomNumber = 6
     const randomArr = Util.getRandomNumber(0, results.length-1, randomNumber)
     const returnData = []
     for (let i = 0; i < randomNumber; i++) {
